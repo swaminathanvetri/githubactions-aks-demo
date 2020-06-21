@@ -35,7 +35,7 @@ jobs:
       run: docker build -t githubactions-aks-demo:'${{github.sha}}'
     
     - name: docker login
-      run: docker login --username '${{secrets.DOCKER_LOGIN}}' --password '${{DOCKER_PASSWORD}}'
+      run: docker login --username '${{secrets.DOCKER_LOGIN}}' --password '${{secrets.DOCKER_PASSWORD}}'
       
     - name: tag docker image
       run: docker tag githubactions-aks-demo:'${{github.sha}}' '${{secrets.DOCKER_LOGIN}}'/githubactions-aks-demo:'${{github.sha}}'
