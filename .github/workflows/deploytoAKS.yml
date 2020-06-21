@@ -42,3 +42,47 @@ jobs:
     
     - name: push docker image
       run: docker push '${{secrets.DOCKER_LOGIN}}'/githubactions-aks-demo:'${{github.sha}}'
+      
+    - name: Azure Kubernetes set context
+      uses: Azure/aks-set-context@v1
+      with:
+        # Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`
+        creds: '${{secrets.AZURE_CREDENTIALS}}'
+        # Resource Group Name
+        resource-group: aks-demo-rg
+        # AKS Cluster Name
+        cluster-name: ga-aks-demo-cluster
+
+  # Create K8s secrets to pull images
+    - name: Create secret in Kubernetes cluster
+      uses: Azure/k8s-create-secret@v1.1
+      with:
+        # Container registry url
+        container-registry-url: https://index.docker.io/v1/
+        # Container registry username
+        container-registry-username: '${{secrets.DOCKER_LOGIN}}'
+        # Container registry password
+        container-registry-password:  '${{secrets.DOCKER_PASSWORD}}'
+        # Type of Kubernetes secret. For example, docker-registry or generic
+        secret-type: docker-registry
+        # Name of the secret. You can use this secret name in the Kubernetes YAML configuration file.
+        secret-name: docker-image-pull-secret
+        
+      # Deploy to k8s cluster
+    - name: Deploy to Kubernetes cluster
+      uses: Azure/k8s-deploy@v1
+      with:        
+        # Path to the manifest files which will be used for deployment.
+        manifests: |
+          k8s/deployment.yml
+          k8s/service.yml
+        # Fully qualified resource URL of the image(s) to be used for substitutions on the manifest files Example: contosodemo.azurecr.io/helloworld:test
+        images: '${{secrets.DOCKER_LOGIN}}/githubactions-aks-demo:${{github.sha}}'
+        # Name of a docker-registry secret that has already been set up within the cluster. Each of these secret names are added under imagePullSecrets field for the workloads found in the input manifest files
+        imagepullsecrets: docker-image-pull-secret
+        # deploy/promote/reject
+        action: deploy
+        
+    
+        
+    
