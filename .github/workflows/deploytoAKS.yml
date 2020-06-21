@@ -32,7 +32,7 @@ jobs:
       run: dotnet build -c release
     
     - name: docker build
-      run: docker build -t githubactions-aks-demo:'${{github.sha}}'
+      run: docker build -t githubactions-aks-demo:'${{github.sha}}' .
     
     - name: docker login
       run: docker login --username '${{secrets.DOCKER_LOGIN}}' --password '${{secrets.DOCKER_PASSWORD}}'
