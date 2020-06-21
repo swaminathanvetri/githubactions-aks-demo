@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: githubactions-aks-demo
+spec:
+  selector:
+    matchLabels:
+      app: githubactions-aks-demo
+  template:
+    metadata:
+      labels:
+        app: githubactions-aks-demo
+    spec:
+      containers:
+      - name: githubactions-aks-demo
+        image: wannabeegeek/gaaksdemo
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80

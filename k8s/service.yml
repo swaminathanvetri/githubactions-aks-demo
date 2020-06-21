@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: githubactions-aks-demo-service
+spec:
+  selector:
+    app: githubactions-aks-demo
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 80
