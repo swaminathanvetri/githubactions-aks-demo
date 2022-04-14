@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: githubactions-aks-demo
-        image: wannabeegeek/githubactions-aks-demo
+        image: sam0157/githubactionsaksdemo
         resources:
           limits:
             memory: "128Mi"
